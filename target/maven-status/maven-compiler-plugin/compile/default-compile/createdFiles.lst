@@ -1,0 +1,8 @@
+product_store\account\Account$AccountBuilder.class
+product_store\account\AccountService.class
+product_store\account\Account.class
+product_store\account\AccountResource.class
+product_store\account\AccountApplication.class
+product_store\account\AccountModel.class
+product_store\account\AccountRepository.class
+product_store\account\AccountParser.class
