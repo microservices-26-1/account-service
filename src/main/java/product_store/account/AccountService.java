@@ -36,7 +36,9 @@ public class AccountService {
     }
 
     public Account findById(String id) {
-        return accountRepository.findById(id).orElse(null).to();
+        return accountRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"))
+            .to();
     }
 
     public List<Account> findByAll() {
@@ -49,7 +51,9 @@ public class AccountService {
 
     public Account findByEmailAndPassword(String email, String password) {
         String sha256 = calcHash(password);
-        return accountRepository.findByEmailAndPasswordSha256(email, sha256).orElse(null).to();
+        return accountRepository.findByEmailAndPasswordSha256(email, sha256)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"))
+            .to();
     }
 
     private String calcHash(String text) {

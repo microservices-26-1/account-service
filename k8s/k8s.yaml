@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: account-secret
+type: Opaque
+stringData:
+  DATABASE_USERNAME: root
+  DATABASE_PASSWORD: "senha"
+  JWT_SECRET_KEY: chave
+  
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: account-config
+data:
+  DATABASE_HOST: db
+  DATABASE_PORT: "5432"
+  DATABASE_DB: project
+  CORS_ALLOWED_ORIGINS: "http://localhost,http://localhost:80,http://localhost:8081"
+  CORS_ALLOWED_CREDENTIALS: "true"
+  JWT_HTTP_ONLY: "true"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account
+  template:
+    metadata:
+      labels:
+        app: account
+    spec:
+      containers:
+        - name: account
+          image: youcancallmegus/account:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: account-config
+            - secretRef:
+                name: account-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: account
+spec:
+  selector:
+    app: account
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
